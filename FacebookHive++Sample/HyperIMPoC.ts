@@ -20,9 +20,7 @@ namespace HyperTest {
         }
 
         class App {
-            static FRIENDS_COLLECTION_NAME = "friends";
             static GROUPS_COLLECTION_NAME = "groups";
-            static FRIENDS_GROUPS_COLLECTION_NAME = "friendsgroups";
             static GROUP_MESSAGES_COLLECTION_NAME = "messages";
 
             myDID: string;
@@ -94,17 +92,7 @@ namespace HyperTest {
             initializeDatabase() {
                 // Create collections
                 this.myProvider.database.createCollectionIfNotExists(App.GROUPS_COLLECTION_NAME)
-
-                // Mongo indexes - Examples only, not all indexes created
-                this.myProvider.database.addIndex(App.GROUPS_COLLECTION_NAME, {
-                    did: 1
-                });
-                this.myProvider.database.addIndex(App.GROUPS_COLLECTION_NAME, {
-                    name: 1
-                });
-            }
-
-            onDatabaseUpgrade(oldVersion, newVersion) {
+                this.myProvider.database.createCollectionIfNotExists(App.GROUP_MESSAGES_COLLECTION_NAME)
             }
 
             // We ourself create a group and we are owner of that group.
@@ -137,8 +125,8 @@ namespace HyperTest {
             }
 
             // Owner posts to his own group
-            async postMessageInOneOfMyGroups(messageContent: string, groupVisibility: Group) {
-                let message = new Message(messageContent, groupVisibility.id);
+            async postMessageInOneOfMyGroups(messageContent: string, group: Group) {
+                let message = new Message(messageContent, group.id);
                 message.id = await this.myProvider.database.insert(App.GROUP_MESSAGES_COLLECTION_NAME, message);
             }
 
