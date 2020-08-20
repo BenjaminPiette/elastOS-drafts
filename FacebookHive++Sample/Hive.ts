@@ -3,8 +3,8 @@ import { DIDSDK } from "./DID";
 export namespace Hive {
     // Any object, but made of string keys and any values
     // Ex: myObj["aKey"] = anyValue
-    type StringIndexableObject = {
-        [k:string]:any
+    export class JSONObject {
+        [k:string]: JSONObject | JSONObject[] | string | number | boolean
     };
 
     // Make sure all classes that inherit from this are serializable to JSON, because they are going to be
@@ -22,6 +22,12 @@ export namespace Hive {
     export namespace Conditions {
         export class Condition extends Serializable {}
 
+        export class SubCondition extends Hive.Conditions.Condition {
+            constructor(private subConditionName: string) {
+                super();
+            }
+        }
+
         export class NoCondition extends Condition {}
 
         // At least one condition in the list must pass, to get this condition pass
@@ -36,13 +42,6 @@ export namespace Hive {
             constructor(public conditions: Condition[]) {
                 super();
             };
-        }
-    }
-
-    export namespace ACL {
-        export class ACLManager {
-            constructor(private provider: VaultProviderBase) {}
-            registerSubCondition(conditionName: string, condition: Hive.Conditions.Condition) {}
         }
     }
 
@@ -99,20 +98,14 @@ export namespace Hive {
         export namespace ACL {
             // The given find query must return at least 1 result to pass
             export class QueryHasResultsCondition extends Hive.Conditions.Condition {
-                constructor(collectionName: string, public findQueryFields?: StringIndexableObject, public options?: { projectionName: string }) {
+                constructor(collectionName: string, public findQueryFields?: JSONObject, public options?: { projectionName: string }) {
                     super();
                 }
             }
 
             // The parameters passed to the query must match the given fields and values (mongo format)
             export class ParameterCondition extends Hive.Conditions.Condition {
-                constructor(public paramFieldsCheck: StringIndexableObject) {
-                    super();
-                }
-            }
-
-            export class SubCondition extends Hive.Conditions.Condition {
-                constructor(private subConditionName: string) {
+                constructor(public paramFieldsCheck: JSONObject) {
                     super();
                 }
             }
@@ -121,32 +114,32 @@ export namespace Hive {
         export class DBManager {
             constructor(private provider: VaultProviderBase) {}
 
-            findOne(findQuery: Database.FindQuery | Database.AggregateQuery): Promise<StringIndexableObject> {
-                return Promise.resolve([]);
+            findOne(findQuery: Database.FindQuery | Database.AggregateQuery): Promise<JSONObject> {
+                return Promise.resolve(null);
             }
 
-            findMany(findQuery: Database.FindQuery | Database.AggregateQuery): Promise<StringIndexableObject[]> {
+            findMany(findQuery: Database.FindQuery | Database.AggregateQuery): Promise<JSONObject[]> {
                 return Promise.resolve([]);
             }
         }
 
         export class SelfDBManager extends DBManager {
-            createCollectionIfNotExists(collectionName: string, collectionSchema?: StringIndexableObject) {
+            createCollectionIfNotExists(collectionName: string, collectionSchema?: JSONObject) {
             }
 
-            addIndex(collectionName: string, indexFields: StringIndexableObject) {
+            addIndex(collectionName: string, indexFields: JSONObject) {
             }
 
             // By default if no acl provided, only the owner is allow to use this entry.
-            insert(collectionName: string, insertedEntry: StringIndexableObject): Promise<string> {
+            insert(collectionName: string, insertedEntry: JSONObject): Promise<string> {
                 return Promise.resolve("insertedId");
             }
 
-            update(collectionName: string, matchQuery: StringIndexableObject, updateQuery: StringIndexableObject) {
+            update(collectionName: string, matchQuery: JSONObject, updateQuery: JSONObject) {
                 return Promise.resolve([]);
             }
 
-            delete(collectionName: string, deletedEntry: StringIndexableObject) {
+            delete(collectionName: string, deletedEntry: JSONObject) {
             }
         }
 
@@ -155,32 +148,32 @@ export namespace Hive {
         }
 
         export class FindQuery extends Query {
-            constructor(collectionName: string, public queryFields?: StringIndexableObject) {
+            constructor(collectionName: string, public queryFields?: JSONObject) {
                 super(collectionName);
             }
         }
 
         export class AggregateQuery extends Query {
-            constructor(collectionName: string, public aggregates?: StringIndexableObject[]) {
+            constructor(collectionName: string, public aggregates?: JSONObject[]) {
                 super(collectionName);
             }
         }
 
         export namespace Executables {
             export class FindQuery {
-                constructor(private collectionName: String, private findQuery?: StringIndexableObject) {}
+                constructor(private collectionName: String, private findQuery?: JSONObject) {}
             }
 
             export class InsertQuery {
-                constructor(private collectionName: String, private insertQuery: StringIndexableObject) {}
+                constructor(private collectionName: String, private insertQuery: JSONObject) {}
             }
 
             export class UpdateQuery {
-                constructor(private collectionName: String, private matchQuery: StringIndexableObject, private updateQuery: StringIndexableObject) {}
+                constructor(private collectionName: String, private matchQuery: JSONObject, private updateQuery: JSONObject) {}
             }
 
             export class DeleteQuery {
-                constructor(private collectionName: String, private deleteQuery: StringIndexableObject) {}
+                constructor(private collectionName: String, private deleteQuery: JSONObject) {}
             }
         }
     }
@@ -192,9 +185,11 @@ export namespace Hive {
         export class VaultScriptingManager {
             constructor(private provider: VaultProviderBase) {}
 
+            registerSubCondition(conditionName: string, condition: Hive.Conditions.Condition) {}
+
             setScript(functionName: string, executionSequence: Executable[], accessCondition?: Hive.Conditions.Condition) {}
 
-            call(functionName: string, params?: StringIndexableObject): Promise<StringIndexableObject> { return Promise.resolve({}); }
+            call(functionName: string, params?: JSONObject): Promise<JSONObject | JSONObject[]> { return Promise.resolve({}); }
         }
     }
 
@@ -238,12 +233,10 @@ export namespace Hive {
 
     export class SelfVaultProvider extends VaultProviderBase {
         database: Database.SelfDBManager;
-        acl: ACL.ACLManager;
 
         constructor() {
             super();
             this.database = new Database.SelfDBManager(this);
-            this.acl = new ACL.ACLManager(this);
         }
     }
 }

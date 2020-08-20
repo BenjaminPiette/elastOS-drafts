@@ -16,7 +16,7 @@ import { DIDSDK } from "./DID";
 
 namespace MyFacebookTest1 {
     namespace MyFacebook {
-        class SentFriendRequest {
+        class SentFriendRequest extends Hive.JSONObject {
             id?: string; // mongo entry id
             name: string; // friend name
             targetDID: string; // DID of the requested friend
@@ -24,33 +24,41 @@ namespace MyFacebookTest1 {
             acceptedDate?: number; // date at which the invitation was accepted by the friend
         }
 
-        class ReceivedFriendRequest {
+        class ReceivedFriendRequest extends Hive.JSONObject {
             id?: string; // mongo entry id
             name: string; // friend name
             requesterDID: string; // DID of the requesting friend
             requestDate: number; // request timestamp
         }
 
-        class Friend {
+        class Friend extends Hive.JSONObject {
             isBlocked: boolean;
 
-            constructor(public did: string, public name: string) {}
+            constructor(public did: string, public name: string) {
+                super();
+            }
         }
 
-        class Group {
+        class Group extends Hive.JSONObject {
             id?: string;
 
-            constructor(public name: string) {}
+            constructor(public name: string) {
+                super();
+            }
         }
 
-        class Message {
+        class Message extends Hive.JSONObject {
             id?: string;
 
-            constructor(public content: string, public groupVisibilityId: string) {}
+            constructor(public content: string, public groupVisibilityId: string) {
+                super();
+            }
         }
 
-        class FriendGroupPair {
-            constructor(public friendDID: string, public groupId: string) {}
+        class FriendGroupPair extends Hive.JSONObject {
+            constructor(public friendDID: string, public groupId: string) {
+                super();
+            }
         }
 
         type Comment = {
@@ -62,11 +70,13 @@ namespace MyFacebookTest1 {
             picture?: Hive.ResourceRef;
         }
 
-        class PrivateMessage {
+        class PrivateMessage extends Hive.JSONObject {
             id?: string;
             date: number;
 
-            constructor(public fromDID: string, public toDID: string, public message: string) {}
+            constructor(public fromDID: string, public toDID: string, public message: string) {
+                super();
+            }
         }
 
         class App {
@@ -87,13 +97,13 @@ namespace MyFacebookTest1 {
                 this.myDID = await DIDSDK.DIDStore.getMyDID();
                 this.myProvider = new Hive.SelfVaultProvider();
 
-                this.myProvider.acl.registerSubCondition("callerIsAFriend",
+                this.myProvider.scripts.registerSubCondition("callerIsAFriend",
                     new Hive.Database.ACL.QueryHasResultsCondition(App.FRIENDS_COLLECTION_NAME, {
                         did: "$callerdid"
                     })
                 );
 
-                this.myProvider.acl.registerSubCondition("callerCanReadCommentMessage",
+                this.myProvider.scripts.registerSubCondition("callerCanReadCommentMessage",
                     // Either the message is group-private and caller must be in one of the groups,
                     // or the message must be public
                     new Hive.Conditions.OrCondition([
@@ -150,7 +160,7 @@ namespace MyFacebookTest1 {
                     ],
                     // Access condition(s):
                     // Caller must already be one of our friends to be able to see our friends list
-                    new Hive.Database.ACL.SubCondition("callerIsAFriend")
+                    new Hive.Conditions.SubCondition("callerIsAFriend")
                 );
 
                 this.myProvider.scripts.setScript("getMessages",
@@ -178,7 +188,7 @@ namespace MyFacebookTest1 {
                     })],
                     // Access condition(s):
                     new Hive.Conditions.AndCondition ([
-                        new Hive.Database.ACL.SubCondition("callerCanReadCommentMessage"),
+                        new Hive.Conditions.SubCondition("callerCanReadCommentMessage"),
 
                         // Rate limitating: the same friend is not allowed to write more than 5 comments per minute.
                         new Hive.QoS.Conditions.CallsPerMinuteCondition("add_comment_$callerdid", 5)
@@ -194,7 +204,7 @@ namespace MyFacebookTest1 {
                         new Hive.File.Executables.FileStreamer("$prev.picture")
                     ],
                     // Access condition(s):
-                    new Hive.Database.ACL.SubCondition("callerCanReadCommentMessage")
+                    new Hive.Conditions.SubCondition("callerCanReadCommentMessage")
                 );
 
                 this.myProvider.scripts.setScript("sendPrivateMessage", [
@@ -205,7 +215,7 @@ namespace MyFacebookTest1 {
                         date: "$now"
                     }),
                     // Access condition(s):
-                    new Hive.Database.ACL.SubCondition("callerIsAFriend")
+                    new Hive.Conditions.SubCondition("callerIsAFriend")
                 ]);
 
                 this.myProvider.scripts.setScript("editPrivateMessage", [

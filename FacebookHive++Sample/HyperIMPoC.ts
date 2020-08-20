@@ -3,20 +3,26 @@ import { DIDSDK } from "./DID";
 
 namespace HyperTest {
     namespace HyperIM {
-        class Group {
+        class Group extends Hive.JSONObject {
             id?: string;
 
-            constructor(public name: string) {}
+            constructor(public name: string) {
+                super();
+            }
         }
 
-        class Friend {
-            constructor(public name: string, public did: string) {}
+        class Friend extends Hive.JSONObject {
+            constructor(public name: string, public did: string) {
+                super();
+            }
         }
 
-        class Message {
+        class Message extends Hive.JSONObject {
             id?: string;
 
-            constructor(public content: string, public groupVisibilityId: string) {}
+            constructor(public content: string, public groupVisibilityId: string) {
+                super();
+            }
         }
 
         class App {
@@ -31,7 +37,7 @@ namespace HyperTest {
                 this.myDID = await DIDSDK.DIDStore.getMyDID();
                 this.myProvider = new Hive.SelfVaultProvider();
 
-                this.myProvider.acl.registerSubCondition("userInGroup",
+                this.myProvider.scripts.registerSubCondition("userInGroup",
                     /**
                      * Serialized in json:
                      * {
@@ -56,7 +62,7 @@ namespace HyperTest {
                         })
                     ],
                     // Access condition:
-                    new Hive.Database.ACL.SubCondition("userInGroup") // Only users in a group can view group messages
+                    new Hive.Conditions.SubCondition("userInGroup") // Only users in a group can view group messages
                 );
 
                 // Let external users access my groups list.
@@ -82,7 +88,7 @@ namespace HyperTest {
                     })],
                     // Access condition(s):
                     new Hive.Conditions.AndCondition ([
-                        new Hive.Database.ACL.SubCondition("userInGroup") // Only users in a group can post group messages
+                        new Hive.Conditions.SubCondition("userInGroup") // Only users in a group can post group messages
                     ])
                 );
 
