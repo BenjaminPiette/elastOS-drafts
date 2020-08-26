@@ -53,9 +53,11 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_subcondition -H "Authoriz
     {
       "name": "user_in_group",
       "condition": {
+        "type": "query_has_results",
         "collection": "groups",
         "query": {
-          "group_id": "id"
+          "group_id": "id", 
+          "*caller_did": "friends"
         }
       }
     }
@@ -72,7 +74,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
           "endpoint": "db/find_many",
           "name": "messages",
           "query": {
-            "group_id": "4aktrab688db87875fddc6Km"
+            "group_id": "group_id"
           },
           "options": {
             "limit": 100,
@@ -101,10 +103,10 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       "name": "get_groups",
       "exec_sequence": [
         {
-          "type": "db/find_many",
+          "endpoint": "db/find_many",
           "name": "groups",
           "query": {
-            "did": "did:elastos:iUhndsxcgijret834Hdasdf31Ld"
+            "*caller_did": "did"
           },
           "options": {
             "projection": {
@@ -128,9 +130,10 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
           "endpoint": "db/insert_one",
           "name": "messages",
           "document": {
-            "group_id": "4aktrab688db87875fddc6Km", 
-            "friend_did": "did:elastos:iUhndsxcgijret834Hdasdf31Ld",
-            "content": "New message"
+            "group_id": "group_id", 
+            "*caller_did": "friend_did",
+            "content": "content",
+            "content_created": "created"
           },
           "options": {}
         },
@@ -138,7 +141,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
           "endpoint": "db/find_one",
           "name": "messages",
           "query": {
-            "group_id": "4aktrab688db87875fddc6Km"
+            "group_id": "group_id"
           },
           "options": {
             "sort": [
@@ -198,7 +201,9 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
         "group_id": "4aktrab688db87875fddc6Km",
         "group_created": {
           "$gte": "Wed, 25 Feb 1987 17:00:00 GMT"
-        }
+        },
+        "content": "New Message"
+        "content_created": "Wed, 25 Feb 1987 17:00:00 GMT"
       }
     }
 EOF
