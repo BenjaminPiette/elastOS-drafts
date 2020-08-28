@@ -1,16 +1,31 @@
 - Create a new collection "groups"
 ```bash
 curl -XPOST http://localhost:5000/api/v1/db/create_collection -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
-  {
-    "collection": "groups", 
-    "schema": {
-      "id": {
-        "type": "string"
-      },
-      "name": {
-        "type": "string"
-      }
+    {
+      "collection": "groups"
     }
+EOF
+```
+
+- Create a new group "tuum-tech"
+```bash
+curl -XPOST http://localhost:5000/api/v1/db/insert_many -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+  {
+    "collection": "groups",
+    "document": [
+      {
+        "name": "Tuum Tech",
+        "friends": [
+          "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
+        ]
+      },
+      {
+        "name": "Trinity",
+        "friends": [
+          "did:elastos:kjKnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZz"
+        ]
+      }
+    ]
   }
 EOF
 ```
@@ -18,31 +33,22 @@ EOF
 - Create a new collection "messages"
 ```bash
 curl -XPOST http://localhost:5000/api/v1/db/create_collection -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
-  {
-    "collection": "messages", 
-    "schema": {
-      "id": {
-        "type": "string"
-      },
-      "content": {
-        "type": "string"
-      },
-      "group_id": {
-        "type": "string"
-      },
-      "group_visibility": {
-        "type": "boolean"
-      }
+    {
+      "collection": "messages"
     }
-  }
 EOF
 ```
 
-- Create a new group "tuum-tech"
+- Create a new message "Old Message"
 ```bash
-curl -XPOST http://localhost:5000/api/v1/db/col/groups -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
   {
-    "name": "tuum-tech"
+    "collection": "messages",
+    "document": {
+      "content": "Old Message",
+      "group_id": "5f484a24efc1cbf6fc88ffb7",
+      "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
+    }
   }
 EOF
 ```
@@ -53,11 +59,16 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_subcondition -H "Authoriz
     {
       "name": "user_in_group",
       "condition": {
-        "type": "query_has_results",
+        "endpoint": "condition/has_results",
         "collection": "groups",
-        "query": {
-          "group_id": "id", 
-          "*caller_did": "friends"
+        "options": {
+          "filter": {
+            "group_id": "_id", 
+            "*caller_did": "friends"
+          },
+          "skip": 0,
+          "limit": 10,
+          "maxTimeMS": 1000000000
         }
       }
     }
@@ -72,19 +83,13 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       "exec_sequence": [
         {
           "endpoint": "db/find_many",
-          "name": "messages",
-          "query": {
-            "group_id": "group_id"
-          },
+          "collection": "messages",
           "options": {
-            "limit": 100,
-            "sort": [
-              "created"
-            ],
-            "projection": {
-              "created": 1,
-              "content": 1
-            }
+            "filter": {
+              "group_id": "group_id"
+            },
+            "projection": {"_id": false},
+            "limit": 100
           }
         }
       ],
@@ -94,7 +99,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       }
     }
 EOF
-```
+```  
 
 - Set script "get_groups" that gets all the groups the DID user belongs to. As part of the result, only the "_id" and "name" are returned
  ```bash
@@ -104,14 +109,14 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       "exec_sequence": [
         {
           "endpoint": "db/find_many",
-          "name": "groups",
-          "query": {
-            "*caller_did": "did"
-          },
+          "collection": "groups",
           "options": {
+            "filter": {
+              "*caller_did": "friends"
+            },
             "projection": {
-              "_id": 1,
-              "name": 1
+              "_id": false,
+              "name": true
             }
           }
         }
@@ -128,29 +133,28 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       "exec_sequence": [
         {
           "endpoint": "db/insert_one",
-          "name": "messages",
+          "collection": "messages",
           "document": {
-            "group_id": "group_id", 
+            "group_id": "group_id",
             "*caller_did": "friend_did",
             "content": "content",
             "content_created": "created"
           },
-          "options": {}
+          "options": {"bypass_document_validation":false}
         },
         {
           "endpoint": "db/find_one",
-          "name": "messages",
-          "query": {
-            "group_id": "group_id"
-          },
+          "collection": "messages",
           "options": {
-            "sort": [
-              "-created"
-            ],
-            "projection": {
-              "created": 1,
-              "content": 1
-            }
+            "filter": {
+              "group_id": "group_id"
+            },
+            "projection": {"_id": false},
+            "sort": {"created": "desc"},
+            "allow_partial_results": false,
+            "return_key": false,
+            "show_record_id": false,
+            "batch_size": 0
           }
         }
       ],
@@ -158,7 +162,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "operation": "and",
         "conditions": [
             {
-                "type": "sub",
+                "operation": "sub",
                 "name": "user_in_group"
             }
         ]
@@ -179,13 +183,11 @@ Should return something like
 ```json
         {
           "_status": "OK", 
-          "_items": [
+          "items": [
             {
-              "_id": "4aktrab688db87875fddc6Km",
               "name": "Group 1"
             },
             {
-              "_id": "5akttab688db87875nddc6Ka",
               "name": "Group 2"
             }
           ]
@@ -198,12 +200,12 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": "4aktrab688db87875fddc6Km",
+        "group_id": "5f484a24efc1cbf6fc88ffb7",
         "group_created": {
-          "$gte": "Wed, 25 Feb 1987 17:00:00 GMT"
+          "$gte": "2021-08-27 00:00:00"
         },
-        "content": "New Message"
-        "content_created": "Wed, 25 Feb 1987 17:00:00 GMT"
+        "content": "New Message",
+        "content_created": "2021-08-27 00:00:00"
       }
     }
 EOF
@@ -223,7 +225,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": "4aktrab688db87875fddc6Km"
+        "group_id": "5f484a24efc1cbf6fc88ffb7"
       }
     }
 EOF
