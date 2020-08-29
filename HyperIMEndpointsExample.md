@@ -39,39 +39,17 @@ curl -XPOST http://localhost:5000/api/v1/db/create_collection -H "Authorization:
 EOF
 ```
 
-- Create a new message "Old Message"
+- Create a new message "Old Message". Make sure to replace the group_id with the actual id that you get while creating your own collection
 ```bash
 curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
   {
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": "5f484a24efc1cbf6fc88ffb7",
+      "group_id": {"\$oid": "5f4ab397029d14bd81ab60bd"},
       "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
     }
   }
-EOF
-```
-
-- Create a new subcondition "user_in_group"
-```bash
-curl -XPOST http://localhost:5000/api/v1/scripting/set_subcondition -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
-    {
-      "name": "user_in_group",
-      "condition": {
-        "endpoint": "condition/has_results",
-        "collection": "groups",
-        "options": {
-          "filter": {
-            "group_id": "_id", 
-            "*caller_did": "friends"
-          },
-          "skip": 0,
-          "limit": 10,
-          "maxTimeMS": 1000000000
-        }
-      }
-    }
 EOF
 ```
 
@@ -80,22 +58,32 @@ EOF
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "get_group_messages",
-      "exec_sequence": [
-        {
-          "endpoint": "db/find_many",
+      "executable": {
+        "type": "find",
+        "name": "find_messages",
+        "body": {
           "collection": "messages",
+          "filter": {
+            "group_id": "group_id"
+          },
           "options": {
-            "filter": {
-              "group_id": "group_id"
+            "projection": {
+              "_id": false
             },
-            "projection": {"_id": false},
-            "limit": 100
+            "limit": 1
           }
         }
-      ],
+      },
       "condition": {
-          "operation": "sub",
-          "name": "user_in_group"
+        "type": "queryHasResult",
+        "name": "verify_user_permission",
+        "body": {
+          "collection": "groups",
+          "filter": {
+            "group_id": "_id",
+            "*caller_did": "friends"
+          }
+        }
       }
     }
 EOF
@@ -106,21 +94,22 @@ EOF
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "get_groups",
-      "exec_sequence": [
-        {
-          "endpoint": "db/find_many",
+      "executable": {
+        "type": "find",
+        "name": "get_groups",
+        "body": {
           "collection": "groups",
+          "filter": {
+            "*caller_did": "friends"
+          },
           "options": {
-            "filter": {
-              "*caller_did": "friends"
-            },
             "projection": {
               "_id": false,
               "name": true
             }
           }
         }
-      ]
+      }
     }
 EOF
 ```
@@ -130,41 +119,67 @@ EOF
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "add_group_message",
-      "exec_sequence": [
-        {
-          "endpoint": "db/insert_one",
-          "collection": "messages",
-          "document": {
-            "group_id": "group_id",
-            "*caller_did": "friend_did",
-            "content": "content",
-            "content_created": "created"
-          },
-          "options": {"bypass_document_validation":false}
-        },
-        {
-          "endpoint": "db/find_one",
-          "collection": "messages",
-          "options": {
-            "filter": {
-              "group_id": "group_id"
-            },
-            "projection": {"_id": false},
-            "sort": {"created": "desc"},
-            "allow_partial_results": false,
-            "return_key": false,
-            "show_record_id": false,
-            "batch_size": 0
-          }
-        }
-      ],
-      "condition": {
-        "operation": "and",
-        "conditions": [
-            {
-                "operation": "sub",
-                "name": "user_in_group"
+      "executable": {
+        "type": "aggregated",
+        "name": "add_and_return_message",
+        "body": [
+          {
+            "type": "insert",
+            "name": "add_message_to_end",
+            "body": {
+              "collection": "messages",
+              "document": {
+                "group_id": "group_id",
+                "*caller_did": "friend_did",
+                "content": "content",
+                "content_created": "created"
+              },
+              "options": {"bypass_document_validation": false}
             }
+          },
+          {
+            "type": "find",
+            "name": "get_last_message",
+            "body": {
+              "collection": "messages",
+              "filter": {
+                "group_id": "group_id"
+              },
+              "options": {
+                "projection": {"_id": false},
+                "sort": {"created": "desc"},
+                "limit": 1
+              }
+            }
+          }
+        ]
+      },
+      "condition": {
+        "type": "and",
+        "name": "verify_user_permission",
+        "body": [
+          {
+            "type": "queryHasResult",
+            "name": "user_in_group",
+            "body": {
+              "collection": "groups",
+              "filter": {
+                "group_id": "_id",
+                "*caller_did": "friends"
+              }
+            }
+          },
+          {
+            "type": "queryHasResult",
+            "name": "user_in_group",
+            "body": {
+              "collection": "groups",
+              "filter": {
+                "group_id": "_id",
+                 "*caller_did": "friends"
+              }
+            }
+          }
         ]
       }
     }
@@ -200,7 +215,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": "5f484a24efc1cbf6fc88ffb7",
+        "group_id": {"\$oid": "5f4ab397029d14bd81ab60bd"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -225,7 +240,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": "5f484a24efc1cbf6fc88ffb7"
+        "group_id": {"\$oid": "5f4ab397029d14bd81ab60bd"}
       }
     }
 EOF
