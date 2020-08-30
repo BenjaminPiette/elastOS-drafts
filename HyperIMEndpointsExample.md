@@ -69,8 +69,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
           "options": {
             "projection": {
               "_id": false
-            },
-            "limit": 1
+            }
           }
         }
       },
@@ -196,17 +195,14 @@ EOF
 ```
 Should return something like
 ```json
+    {
+      "_status": "OK",
+      "items": [
         {
-          "_status": "OK", 
-          "items": [
-            {
-              "name": "Group 1"
-            },
-            {
-              "name": "Group 2"
-            }
-          ]
+          "name": "Tuum Tech"
         }
+      ]
+    }
 ```
 
 - Run script "add_group_message"
@@ -227,11 +223,24 @@ EOF
 ```
 Should return something like
 ```json
+    {
+      "_status": "OK",
+      "items": [
         {
-          "_status": "OK", 
-          "created": "Wed, 25 Feb 1987 17:00:00 GMT",
-          "content": "New message"
+          "content": "New Message",
+          "created": {
+            "$date": 1630022400000
+          },
+          "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
+          "group_id": {
+            "$oid": "5f4bcb57c056b50eb511e9a3"
+          },
+          "modified": {
+            "$date": 1598803861786
+          }
         }
+      ]
+    }
 ```
 
 - Run script "get_group_messages"
@@ -240,28 +249,42 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": {"\$oid": "5f4ab397029d14bd81ab60bd"}
+        "group_id": {"\$oid": "5f4bcb57c056b50eb511e9a3"}
       }
     }
 EOF
 ```
 Should return something like
 ```json
+    {
+      "_status": "OK",
+      "items": [
         {
-          "_status": "OK", 
-          "_items": [
-            {
-              "created": "Wed, 25 Feb 1987 17:00:00 GMT",
-              "content": "Old Message 1"
-            },
-            {
-              "created": "Wed, 25 Feb 1987 17:00:00 GMT",
-              "content": "Old Message 2"
-            },
-            {
-              "created": "Wed, 25 Feb 1987 17:00:00 GMT",
-              "content": "New message"
-            }
-          ]
+          "content": "Old Message",
+          "created": {
+            "$date": 1598802809056
+          },
+          "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
+          "group_id": {
+            "$oid": "5f4bcb57c056b50eb511e9a3"
+          },
+          "modified": {
+            "$date": 1598802809056
+          }
+        },
+        {
+          "content": "New Message",
+          "created": {
+            "$date": 1630022400000
+          },
+          "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
+          "group_id": {
+            "$oid": "5f4bcb57c056b50eb511e9a3"
+          },
+          "modified": {
+            "$date": 1598803861786
+          }
         }
+      ]
+    }
 ```
