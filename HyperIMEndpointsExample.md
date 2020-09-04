@@ -46,7 +46,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5f4ab397029d14bd81ab60bd"},
+      "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
       "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
     }
   }
@@ -74,7 +74,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         }
       },
       "condition": {
-        "type": "queryHasResult",
+        "type": "queryHasResults",
         "name": "verify_user_permission",
         "body": {
           "collection": "groups",
@@ -158,7 +158,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "name": "verify_user_permission",
         "body": [
           {
-            "type": "queryHasResult",
+            "type": "queryHasResults",
             "name": "user_in_group",
             "body": {
               "collection": "groups",
@@ -169,7 +169,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             }
           },
           {
-            "type": "queryHasResult",
+            "type": "queryHasResults",
             "name": "user_in_group",
             "body": {
               "collection": "groups",
@@ -180,6 +180,81 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             }
           }
         ]
+      }
+    }
+EOF
+```
+
+- Set script "update_group_message" that updates one message with the given filter from the group messaging. Note the key $set being surrounded by single quote. This is required if you're passing in any operations of executables that start with "$"
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "update_group_message",
+      "executable": {
+        "type": "update",
+        "name": "update_and_return",
+        "body": {
+          "collection": "messages",
+          "filter": {
+            "group_id": "group_id",
+            "*caller_did": "friend_did",
+            "old_content": "content"
+          },
+          "update": {
+            "\$set": {
+              "group_id": "group_id",
+              "*caller_did": "friend_did",
+              "new_content": "content"
+            }
+          },
+          "options": {
+            "upsert": true,
+            "bypass_document_validation": false
+          }
+        }
+      },
+      "condition": {
+        "type": "queryHasResults",
+        "name": "verify_user_permission",
+        "body": {
+          "collection": "groups",
+          "filter": {
+            "group_id": "_id",
+            "*caller_did": "friends"
+          }
+        }
+      }
+    }
+EOF
+```
+
+- Set script "delete_group_message" that deletes one message with the given filter from the group messaging. 
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "delete_group_message",
+      "executable": {
+        "type": "delete",
+        "name": "delete_and_return",
+        "body": {
+          "collection": "messages",
+          "filter": {
+            "group_id": "group_id",
+            "*caller_did": "friend_did",
+            "content": "content"
+          }
+        }
+      },
+      "condition": {
+        "type": "queryHasResults",
+        "name": "verify_user_permission",
+        "body": {
+          "collection": "groups",
+          "filter": {
+            "group_id": "_id",
+            "*caller_did": "friends"
+          }
+        }
       }
     }
 EOF
@@ -211,7 +286,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5f4ab397029d14bd81ab60bd"},
+        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -233,7 +308,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f4bcb57c056b50eb511e9a3"
+            "$oid": "5f525c2e456c187a5f69197c"
           },
           "modified": {
             "$date": 1598803861786
@@ -249,7 +324,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": {"\$oid": "5f4bcb57c056b50eb511e9a3"}
+        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"}
       }
     }
 EOF
@@ -266,7 +341,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f4bcb57c056b50eb511e9a3"
+            "$oid": "5f525c2e456c187a5f69197c"
           },
           "modified": {
             "$date": 1598802809056
@@ -279,7 +354,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f4bcb57c056b50eb511e9a3"
+            "$oid": "5f525c2e456c187a5f69197c"
           },
           "modified": {
             "$date": 1598803861786
@@ -287,4 +362,49 @@ Should return something like
         }
       ]
     }
+```
+
+- Run script "update_group_message"
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "update_group_message",
+      "params": {
+        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
+        "old_content": "New Message",
+        "new_content": "Updated Message"
+      }
+    }
+EOF
+```
+Should return something like
+```json
+  {
+    "_status": "OK",
+    "acknowledged": true,
+    "matched_count": 1,
+    "modified_count": 1,
+    "upserted_id": "None"
+  }
+```
+
+- Run script "delete_group_message"
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "delete_group_message",
+      "params": {
+        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
+        "content": "Updated Message"
+      }
+    }
+EOF
+```
+Should return something like
+```json
+  {
+    "_status": "OK",
+    "acknowledged": true,
+    "deleted_count":1
+  }
 ```
