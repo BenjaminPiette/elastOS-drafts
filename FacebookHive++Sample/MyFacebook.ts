@@ -1,11 +1,11 @@
-import { Hive } from "./Hive";
-import { DIDSDK } from "./DID";
+import { Hive } from "../Plugins/Hive";
+import { DIDSDK } from "../Plugins/DID";
 
 // TODO: DB maintenance/changes: rename/remove/add/migrate collection fields...
     // Need a deep study how of to do this in mongo, and provide an api that can to it too.
-// TODO: no matter where we store uploaded files, we probably need quotas. Then what happen after quotas are reached, 
+// TODO: no matter where we store uploaded files, we probably need quotas. Then what happen after quotas are reached,
 // or disk is full, on user's vault or friend's vault? How to cleanup the mess?
-    // Could we have a human readable description or context (+deletable yes/no) attached to each db  entry or file? So that users 
+    // Could we have a human readable description or context (+deletable yes/no) attached to each db  entry or file? So that users
     // know what can be cleaned up
 // TODO: CLI publish dapp use case: how to publish a public EPK? As dapps need to authenticate to write data on hive, which
     // dapp is writing?
@@ -294,7 +294,7 @@ namespace MyFacebookTest1 {
 
             // We have received a friend invitation and we want to accept it
             async acceptFriend(friendRequest: ReceivedFriendRequest) {
-                // Accepting a friend means adding him to our friends list, and letting him know that we 
+                // Accepting a friend means adding him to our friends list, and letting him know that we
                 // accepted so he can also add us.
 
                 // Add as a friend in our friends collection
@@ -381,7 +381,7 @@ namespace MyFacebookTest1 {
                 await myFriendVaultProvider.scripts.call("addComment", {
                     message: commentMessage,
                     messageId: messageRef,
-                    picture: new Hive.File.StreamableFile(fileData) // We may use a special command here to reference streamable resources while calling scripts
+                    //picture: new Hive.File.StreamableFile(fileData) // We may use a special command here to reference streamable resources while calling scripts
                 });
             }
 
@@ -411,7 +411,7 @@ namespace MyFacebookTest1 {
                 });
 
                 // Retrieve friend's did from message did
-                // Note: just to practice hive. But this friendDID should be passed as parameter, no real need for a 
+                // Note: just to practice hive. But this friendDID should be passed as parameter, no real need for a
                 // remote query here.
                 let pm = await this.myProvider.database.findOne(new Hive.Database.FindQuery(App.PRIVATE_MESSAGES_COLLECTION_NAME, {
                     id: messageId

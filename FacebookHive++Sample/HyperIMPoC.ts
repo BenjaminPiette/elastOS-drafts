@@ -1,5 +1,5 @@
-import { Hive } from "./Hive";
-import { DIDSDK } from "./DID";
+import { Hive } from "../Plugins/Hive";
+import { DIDSDK } from "../Plugins/DID";
 
 namespace HyperTest {
     namespace HyperIM {
@@ -43,7 +43,7 @@ namespace HyperTest {
                      * {
                      *      "type":"queryhasresults",
                      *      "collection":"groups",
-                     *      "query": id, friends... 
+                     *      "query": id, friends...
                      * }
                      */
                     new Hive.Database.ACL.QueryHasResultsCondition(App.GROUPS_COLLECTION_NAME, {
