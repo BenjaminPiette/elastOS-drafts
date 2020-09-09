@@ -46,7 +46,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
+      "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
       "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
     }
   }
@@ -64,7 +64,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "messages",
           "filter": {
-            "group_id": "group_id"
+            "group_id": "\$params.group_id"
           },
           "options": {
             "projection": {
@@ -79,8 +79,8 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "groups",
           "filter": {
-            "group_id": "_id",
-            "*caller_did": "friends"
+            "_id": "\$params.group_id",
+            "friends": "\$caller_did"
           }
         }
       }
@@ -99,7 +99,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "groups",
           "filter": {
-            "*caller_did": "friends"
+            "friends": "\$caller_did"
           },
           "options": {
             "projection": {
@@ -128,10 +128,10 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             "body": {
               "collection": "messages",
               "document": {
-                "group_id": "group_id",
-                "*caller_did": "friend_did",
-                "content": "content",
-                "content_created": "created"
+                "group_id": "\$params.group_id",
+                "friend_did": "\$caller_did",
+                "content": "\$params.content",
+                "created": "\$params.content_created"
               },
               "options": {"bypass_document_validation": false}
             }
@@ -142,7 +142,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             "body": {
               "collection": "messages",
               "filter": {
-                "group_id": "group_id"
+                "group_id": "\$params.group_id"
               },
               "options": {
                 "projection": {"_id": false},
@@ -163,8 +163,8 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             "body": {
               "collection": "groups",
               "filter": {
-                "group_id": "_id",
-                "*caller_did": "friends"
+                "_id": "\$params.group_id",
+                "friends": "\$caller_did"
               }
             }
           },
@@ -174,8 +174,8 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             "body": {
               "collection": "groups",
               "filter": {
-                "group_id": "_id",
-                 "*caller_did": "friends"
+                "_id": "\$params.group_id",
+                 "friends": "\$caller_did"
               }
             }
           }
@@ -196,15 +196,15 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "messages",
           "filter": {
-            "group_id": "group_id",
-            "*caller_did": "friend_did",
-            "old_content": "content"
+            "group_id": "\$params.group_id",
+            "friend_did": "\$caller_did",
+            "content": "\$params.old_content"
           },
           "update": {
             "\$set": {
-              "group_id": "group_id",
-              "*caller_did": "friend_did",
-              "new_content": "content"
+              "group_id": "\$params.group_id",
+              "friend_did": "\$caller_did",
+              "content": "\$params.new_content"
             }
           },
           "options": {
@@ -219,8 +219,8 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "groups",
           "filter": {
-            "group_id": "_id",
-            "*caller_did": "friends"
+            "_id": "\$params.group_id",
+            "friends": "\$caller_did"
           }
         }
       }
@@ -239,9 +239,9 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "messages",
           "filter": {
-            "group_id": "group_id",
-            "*caller_did": "friend_did",
-            "content": "content"
+            "group_id": "\$params.group_id",
+            "friend_did": "\$caller_did",
+            "content": "\$params.content"
           }
         }
       },
@@ -251,8 +251,8 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
         "body": {
           "collection": "groups",
           "filter": {
-            "group_id": "_id",
-            "*caller_did": "friends"
+            "_id": "\$params.group_id",
+            "friends": "\$caller_did"
           }
         }
       }
@@ -286,7 +286,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
+        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -308,7 +308,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f525c2e456c187a5f69197c"
+            "$oid": "5f58daa699e7dcd67094feac"
           },
           "modified": {
             "$date": 1598803861786
@@ -324,7 +324,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"}
+        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"}
       }
     }
 EOF
@@ -370,7 +370,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
+        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
         "old_content": "New Message",
         "new_content": "Updated Message"
       }
@@ -394,7 +394,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5f525c2e456c187a5f69197c"},
+        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
         "content": "Updated Message"
       }
     }
