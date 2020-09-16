@@ -16,7 +16,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_many -H "Authorization: token
       {
         "name": "Tuum Tech",
         "friends": [
-          "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
+          "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
         ]
       },
       {
@@ -46,7 +46,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
+      "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
       "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
     }
   }
@@ -286,7 +286,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
+        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -308,7 +308,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f58daa699e7dcd67094feac"
+            "$oid": "5f615e97e3dff8d05a1a53d8"
           },
           "modified": {
             "$date": 1598803861786
@@ -324,7 +324,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"}
+        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"}
       }
     }
 EOF
@@ -341,7 +341,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f525c2e456c187a5f69197c"
+            "$oid": "5f615e97e3dff8d05a1a53d8"
           },
           "modified": {
             "$date": 1598802809056
@@ -354,7 +354,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f525c2e456c187a5f69197c"
+            "$oid": "5f615e97e3dff8d05a1a53d8"
           },
           "modified": {
             "$date": 1598803861786
@@ -370,7 +370,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
+        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
         "old_content": "New Message",
         "new_content": "Updated Message"
       }
@@ -394,7 +394,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5f58daa699e7dcd67094feac"},
+        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
         "content": "Updated Message"
       }
     }
