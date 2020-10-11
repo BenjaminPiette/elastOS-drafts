@@ -1,3 +1,4 @@
+### First Time Only
 - Create a new collection "groups"
 ```bash
 curl -XPOST http://localhost:5000/api/v1/db/create_collection -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
@@ -53,6 +54,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
 EOF
 ```
 
+### Register all the scripts
 - Set script "get_group_messages" that gets the last 100 messages for a particular group ID sorted with "created" field in the ascending order
  ```bash
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
@@ -61,6 +63,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       "executable": {
         "type": "find",
         "name": "find_messages",
+        "output": true,
         "body": {
           "collection": "messages",
           "filter": {
@@ -96,6 +99,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
       "executable": {
         "type": "find",
         "name": "get_groups",
+        "output": true,
         "body": {
           "collection": "groups",
           "filter": {
@@ -139,6 +143,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
           {
             "type": "find",
             "name": "get_last_message",
+            "output": true,
             "body": {
               "collection": "messages",
               "filter": {
@@ -260,6 +265,77 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
 EOF
 ```
 
+- Set script "download_picture" that downloads a file from a vault
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "download_picture",
+      "executable": {
+        "type": "fileDownload",
+        "name": "download",
+        "output": true,
+        "body": {
+          "path": "\$params.path"
+        }
+      },
+      "condition": {
+        "type": "queryHasResults",
+        "name": "user_in_group",
+        "body": {
+          "collection": "groups",
+          "filter": {
+            "_id": "\$params.group_id",
+            "friends": "\$caller_did"
+          }
+        }
+      }
+    }
+EOF
+```
+
+- Set script "get_file_info" that gets the properties and hash of a file
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "get_file_info",
+      "executable": {
+        "type": "aggregated",
+        "name": "get_file_properties_and_hash",
+        "body": [
+          {
+            "type": "fileProperties",
+            "name": "file_properties",
+            "output": true,
+            "body": {
+              "path": "\$params.path"
+            }
+          }, 
+          {
+            "type": "fileHash",
+            "name": "file_hash",
+            "output": true,
+            "body": {
+              "path": "\$params.path"
+            }
+          }
+        ]
+      },
+      "condition": {
+        "type": "queryHasResults",
+        "name": "user_in_group",
+        "body": {
+          "collection": "groups",
+          "filter": {
+            "_id": "\$params.group_id",
+            "friends": "\$caller_did"
+          }
+        }
+      }
+    }
+EOF
+```
+
+### Run all the scripts
 - Run script "get_groups"
  ```bash
 curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
@@ -407,4 +483,31 @@ Should return something like
     "acknowledged": true,
     "deleted_count":1
   }
+```
+
+- Run the script to download
+NOTE: You should first upload a file using upload file API(v1/files/upload/kiran.jpg) before you're able to download
+ ```bash
+curl --output kiran.jpg -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "download_picture",
+      "params": {
+        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "path": "kiran.jpg"
+      }
+    }
+EOF
+```
+
+- Get both the properties and hash of a file
+```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "get_file_info",
+      "params": {
+        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "path": "kiran.jpg"
+      }
+    }
+EOF
 ```
