@@ -47,7 +47,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+      "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
       "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
     }
   }
@@ -265,6 +265,56 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
 EOF
 ```
 
+- Set script "upload_picture" that uploads a file to a vault
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "upload_picture",
+      "executable": {
+        "type": "aggregated",
+        "name": "upload_and_get_message",
+        "body": [
+          {
+            "type": "fileUpload",
+            "name": "upload",
+            "output": true,
+            "body": {
+              "path": "\$params.path"
+            }
+          },
+          {
+            "type": "find",
+            "name": "get_last_message",
+            "output": true,
+            "body": {
+              "collection": "messages",
+              "filter": {
+                "group_id": "\$params.group_id"
+              },
+              "options": {
+                "projection": {"_id": false},
+                "sort": {"created": "desc"},
+                "limit": 1
+              }
+            }
+          }
+        ]
+      },
+      "condition": {
+        "type": "queryHasResults",
+        "name": "user_in_group",
+        "body": {
+          "collection": "groups",
+          "filter": {
+            "_id": "\$params.group_id",
+            "friends": "\$caller_did"
+          }
+        }
+      }
+    }
+EOF
+```
+
 - Set script "download_picture" that downloads a file from a vault
  ```bash
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
@@ -362,7 +412,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -384,7 +434,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f615e97e3dff8d05a1a53d8"
+            "$oid": "5f84cbadc889d24b8013f0c6"
           },
           "modified": {
             "$date": 1598803861786
@@ -400,7 +450,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_group_messages",
       "params": {
-        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"}
+        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"}
       }
     }
 EOF
@@ -417,7 +467,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f615e97e3dff8d05a1a53d8"
+            "$oid": "5f84cbadc889d24b8013f0c6"
           },
           "modified": {
             "$date": 1598802809056
@@ -430,7 +480,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f615e97e3dff8d05a1a53d8"
+            "$oid": "5f84cbadc889d24b8013f0c6"
           },
           "modified": {
             "$date": 1598803861786
@@ -446,7 +496,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
         "old_content": "New Message",
         "new_content": "Updated Message"
       }
@@ -470,7 +520,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
         "content": "Updated Message"
       }
     }
@@ -485,14 +535,26 @@ Should return something like
   }
 ```
 
+- Run the script to upload
+```bash
+curl -XPOST -F data=@run.sh http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: multipart/form-data" -F "metadata=
+    {
+      \"name\": \"upload_picture\",
+      \"params\": {
+        \"group_id\": {\"\$oid\": \"5f84cbadc889d24b8013f0c6\"},
+        \"path\": \"run.sh\"
+      }
+    }"
+```
+
 - Run the script to download
-NOTE: You should first upload a file using upload file API(v1/files/upload/kiran.jpg) before you're able to download
+NOTE: You should first upload a file using upload file API or scripting file API before you're able to download
  ```bash
 curl --output kiran.jpg -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "download_picture",
       "params": {
-        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
         "path": "kiran.jpg"
       }
     }
@@ -505,7 +567,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_file_info",
       "params": {
-        "group_id": {"\$oid": "5f615e97e3dff8d05a1a53d8"},
+        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
         "path": "kiran.jpg"
       }
     }
