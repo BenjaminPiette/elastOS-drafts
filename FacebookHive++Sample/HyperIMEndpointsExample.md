@@ -1,3 +1,17 @@
+### Token
+- Set up token1
+This is usually your own token that is created using user_did and app_did but for testing purposes, you can use the following:
+```bash
+token="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoxNjA1MjkwMzgxLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsImFwcElkIjoiYXBwaWQiLCJhcHBJbnN0YW5jZURpZCI6ImRpZDplbGFzdG9zOmlkZnBLSkoxc29EeFQyR2NnQ1JuRHQzY3U5NFpuR2Z6TlgifQ.VNp73XlJ1hgvJSfN8qYy3k4JkFEGE6C-CeYevpJmgWx0AXPD8EPm3SRNd2z59-eOCLD21vhmteVSZ0X1OmZKFw"
+```
+This sets up did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" and app_did="appid"
+- Set up token2
+This is a second token that can be used for testing purposes(eg. when one did user tries to access another did user's vault)
+```bash
+token2="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoxNjA1MjkwMzgxLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aW9MRmkyMmZvZG1GVUFGS2lhNnVUVjJXOEp6OXZFY1F5UCIsImFwcElkIjoiYXBwaWQiLCJhcHBJbnN0YW5jZURpZCI6ImRpZDplbGFzdG9zOmlkZnBLSkoxc29EeFQyR2NnQ1JuRHQzY3U5NFpuR2Z6TlgifQ.RjNBt_D6Ax-JQbFU2kXHygdj50TDgoGWOew4oBO-P_N0SPDZbQhkIgESwHBweS5Fzsyx-zQVilp-Yxw6Fy2rqA"
+```
+This sets up did="did:elastos:ioLFi22fodmFUAFKia6uTV2W8Jz9vEcQyP" and app_did="appid"
+
 ### First Time Only
 - Create a new collection "groups"
 ```bash
@@ -17,7 +31,8 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_many -H "Authorization: token
       {
         "name": "Tuum Tech",
         "friends": [
-          "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
+          "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
+          "did:elastos:ioLFi22fodmFUAFKia6uTV2W8Jz9vEcQyP"
         ]
       },
       {
@@ -47,7 +62,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
+      "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
       "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
     }
   }
@@ -271,34 +286,12 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
     {
       "name": "upload_picture",
       "executable": {
-        "type": "aggregated",
-        "name": "upload_and_get_message",
-        "body": [
-          {
-            "type": "fileUpload",
-            "name": "upload",
-            "output": true,
-            "body": {
-              "path": "\$params.path"
-            }
-          },
-          {
-            "type": "find",
-            "name": "get_last_message",
-            "output": true,
-            "body": {
-              "collection": "messages",
-              "filter": {
-                "group_id": "\$params.group_id"
-              },
-              "options": {
-                "projection": {"_id": false},
-                "sort": {"created": "desc"},
-                "limit": 1
-              }
-            }
-          }
-        ]
+        "type": "fileUpload",
+        "name": "upload",
+        "output": true,
+        "body": {
+          "path": "\$params.path"
+        }
       },
       "condition": {
         "type": "queryHasResults",
@@ -412,7 +405,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
+        "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -434,7 +427,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f84cbadc889d24b8013f0c6"
+            "$oid": "5f875c6018b1be3c86b2e490"
           },
           "modified": {
             "$date": 1598803861786
@@ -444,13 +437,23 @@ Should return something like
     }
 ```
 
-- Run script "get_group_messages"
- ```bash
-curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+- Run script "get_group_messages". 
+NOTE: This is using $token2 because we're going to test calling a script as user2 that accesses user1's vault. More specifically, $token2 contains caller_did and caller_app_did so we have to pass in context with target_did(the vault owner's DID)
+```bash
+caller_did="did:elastos:ioLFi22fodmFUAFKia6uTV2W8Jz9vEcQyP" # This is the DID of user2
+caller_app_did="appid" # This is the application that's calling the script
+target_did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" # This is the DID of user1
+target_app_did="appid" # This is the application that's calling the script
+```
+```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token2" -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "get_group_messages",
+      "context": {
+        "target_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
+      },
       "params": {
-        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"}
+        "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"}
       }
     }
 EOF
@@ -467,7 +470,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f84cbadc889d24b8013f0c6"
+            "$oid": "5f875c6018b1be3c86b2e490"
           },
           "modified": {
             "$date": 1598802809056
@@ -480,7 +483,7 @@ Should return something like
           },
           "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
           "group_id": {
-            "$oid": "5f84cbadc889d24b8013f0c6"
+            "$oid": "5f875c6018b1be3c86b2e490"
           },
           "modified": {
             "$date": 1598803861786
@@ -496,7 +499,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
+        "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
         "old_content": "New Message",
         "new_content": "Updated Message"
       }
@@ -520,7 +523,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
+        "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
         "content": "Updated Message"
       }
     }
@@ -541,7 +544,7 @@ curl -XPOST -F data=@run.sh http://localhost:5000/api/v1/scripting/run_script -H
     {
       \"name\": \"upload_picture\",
       \"params\": {
-        \"group_id\": {\"\$oid\": \"5f84cbadc889d24b8013f0c6\"},
+        \"group_id\": {\"\$oid\": \"5f875c6018b1be3c86b2e490\"},
         \"path\": \"run.sh\"
       }
     }"
@@ -554,7 +557,7 @@ curl --output kiran.jpg -XPOST http://localhost:5000/api/v1/scripting/run_script
     {
       "name": "download_picture",
       "params": {
-        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
+        "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
         "path": "kiran.jpg"
       }
     }
@@ -567,7 +570,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_file_info",
       "params": {
-        "group_id": {"\$oid": "5f84cbadc889d24b8013f0c6"},
+        "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
         "path": "kiran.jpg"
       }
     }
