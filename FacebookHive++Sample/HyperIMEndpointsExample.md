@@ -280,11 +280,11 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
 EOF
 ```
 
-- Set script "upload_picture" that uploads a file to a vault
+- Set script "upload_file" that uploads a file to a vault
  ```bash
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
-      "name": "upload_picture",
+      "name": "upload_file",
       "executable": {
         "type": "fileUpload",
         "name": "upload",
@@ -308,11 +308,11 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
 EOF
 ```
 
-- Set script "download_picture" that downloads a file from a vault
+- Set script "download_file" that downloads a file from a vault
  ```bash
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
-      "name": "download_picture",
+      "name": "download_file",
       "executable": {
         "type": "fileDownload",
         "name": "download",
@@ -391,11 +391,13 @@ Should return something like
 ```json
     {
       "_status": "OK",
-      "items": [
-        {
-          "name": "Tuum Tech"
-        }
-      ]
+      "get_groups": {
+        "items": [
+          {
+            "name": "Tuum Tech"
+          }
+        ]
+      }
     }
 ```
 
@@ -419,21 +421,23 @@ Should return something like
 ```json
     {
       "_status": "OK",
-      "items": [
-        {
-          "content": "New Message",
-          "created": {
-            "$date": 1630022400000
-          },
-          "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
-          "group_id": {
-            "$oid": "5f875c6018b1be3c86b2e490"
-          },
-          "modified": {
-            "$date": 1598803861786
+      "get_last_message": {
+        "items": [
+          {
+            "content": "New Message",
+            "created": {
+              "$date": 1630022400000
+            },
+            "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
+            "group_id": {
+              "$oid": "5f875c6018b1be3c86b2e490"
+            },
+            "modified": {
+              "$date": 1602774322173
+            }
           }
-        }
-      ]
+        ]
+      }
     }
 ```
 
@@ -462,34 +466,36 @@ Should return something like
 ```json
     {
       "_status": "OK",
-      "items": [
-        {
-          "content": "Old Message",
-          "created": {
-            "$date": 1598802809056
+      "find_messages": {
+        "items": [
+          {
+            "content": "Old Message",
+            "created": {
+              "$date": 1602706609149
+            },
+            "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
+            "group_id": {
+              "$oid": "5f875c6018b1be3c86b2e490"
+            },
+            "modified": {
+              "$date": 1602706609149
+            }
           },
-          "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
-          "group_id": {
-            "$oid": "5f875c6018b1be3c86b2e490"
-          },
-          "modified": {
-            "$date": 1598802809056
+          {
+            "content": "New Message",
+            "created": {
+              "$date": 1630022400000
+            },
+            "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
+            "group_id": {
+              "$oid": "5f875c6018b1be3c86b2e490"
+            },
+            "modified": {
+              "$date": 1602774322173
+            }
           }
-        },
-        {
-          "content": "New Message",
-          "created": {
-            "$date": 1630022400000
-          },
-          "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
-          "group_id": {
-            "$oid": "5f875c6018b1be3c86b2e490"
-          },
-          "modified": {
-            "$date": 1598803861786
-          }
-        }
-      ]
+        ]
+      }
     }
 ```
 
@@ -509,11 +515,7 @@ EOF
 Should return something like
 ```json
   {
-    "_status": "OK",
-    "acknowledged": true,
-    "matched_count": 1,
-    "modified_count": 1,
-    "upserted_id": "None"
+    "_status": "OK"
   }
 ```
 
@@ -532,37 +534,47 @@ EOF
 Should return something like
 ```json
   {
-    "_status": "OK",
-    "acknowledged": true,
-    "deleted_count":1
+    "_status": "OK"
   }
 ```
 
 - Run the script to upload
 ```bash
-curl -XPOST -F data=@run.sh http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: multipart/form-data" -F "metadata=
+curl -F data=@me.jpg http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: multipart/form-data" -F "metadata=
     {
-      \"name\": \"upload_picture\",
+      \"name\": \"upload_file\",
       \"params\": {
         \"group_id\": {\"\$oid\": \"5f875c6018b1be3c86b2e490\"},
-        \"path\": \"run.sh\"
+        \"path\": \"logging.conf\"
       }
     }"
+```
+Should return something like:
+```json
+    {
+      "_status": "OK",
+      "upload_file": {
+        "path": "logging.conf",
+        "upload": "Successful",
+        "vault_endpoint": "/api/v1/files/download?path=logging.conf"
+      }
+    }
 ```
 
 - Run the script to download
 NOTE: You should first upload a file using upload file API or scripting file API before you're able to download
  ```bash
-curl --output kiran.jpg -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
-      "name": "download_picture",
+      "name": "download_file",
       "params": {
         "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
-        "path": "kiran.jpg"
+        "path": "logging.conf"
       }
     }
 EOF
 ```
+Should just download the file and save it to downloaded-run.sh file.
 
 - Get both the properties and hash of a file
 ```bash
@@ -571,8 +583,23 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
       "name": "get_file_info",
       "params": {
         "group_id": {"\$oid": "5f875c6018b1be3c86b2e490"},
-        "path": "kiran.jpg"
+        "path": "run.sh"
       }
     }
 EOF
+```
+Should return something like:
+```json
+    {
+      "_status": "OK",
+      "file_hash": {
+        "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "file_properties": {
+        "last_modify": 1602774453.520667,
+        "name": "run.sh",
+        "size": 0,
+        "type": "file"
+      }
+    }
 ```
