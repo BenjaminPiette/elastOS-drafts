@@ -2,13 +2,13 @@
 - Set up token1
 This is usually your own token that is created using user_did and app_did but for testing purposes, you can use the following:
 ```bash
-token="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoxNjA1MjkwMzgxLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsImFwcElkIjoiYXBwaWQiLCJhcHBJbnN0YW5jZURpZCI6ImRpZDplbGFzdG9zOmlkZnBLSkoxc29EeFQyR2NnQ1JuRHQzY3U5NFpuR2Z6TlgifQ.VNp73XlJ1hgvJSfN8qYy3k4JkFEGE6C-CeYevpJmgWx0AXPD8EPm3SRNd2z59-eOCLD21vhmteVSZ0X1OmZKFw"
+token="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoxNjA4MjE1MTkyLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsImFwcElkIjoiYXBwaWQiLCJhcHBJbnN0YW5jZURpZCI6ImRpZDplbGFzdG9zOmlkZnBLSkoxc29EeFQyR2NnQ1JuRHQzY3U5NFpuR2Z6TlgifQ.myJyQbd4JIGPoZvCItZ2B3SZgkDPHDeo8Vh_Dk5zpaQGs0O-mBehWWu6i39GHO0VnY1orvImHy5h0qFIJ1XtbA"
 ```
 This sets up did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" and app_did="appid"
 - Set up token2
 This is a second token that can be used for testing purposes(eg. when one did user tries to access another did user's vault)
 ```bash
-token2="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoxNjA1MjkwMzgxLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aW9MRmkyMmZvZG1GVUFGS2lhNnVUVjJXOEp6OXZFY1F5UCIsImFwcElkIjoiYXBwaWQiLCJhcHBJbnN0YW5jZURpZCI6ImRpZDplbGFzdG9zOmlkZnBLSkoxc29EeFQyR2NnQ1JuRHQzY3U5NFpuR2Z6TlgifQ.RjNBt_D6Ax-JQbFU2kXHygdj50TDgoGWOew4oBO-P_N0SPDZbQhkIgESwHBweS5Fzsyx-zQVilp-Yxw6Fy2rqA"
+token2="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZTFNNkpKNFpmVHZhYTZONEJ0blJZQzE5OUFncjZpaHptIiwiZXhwIjoxNjA4MjE1NDYzLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsImFwcElkIjoiYXBwaWQyIiwiYXBwSW5zdGFuY2VEaWQiOiJkaWQ6ZWxhc3RvczppZTFNNkpKNFpmVHZhYTZONEJ0blJZQzE5OUFncjZpaHptIn0.e4dgj6V1g3ErIs1XAQ5eegdk4WvwebJFF4tWTZs7Xklgc37fGIat_psp9_xqYh3V6Irz1aTgRwz9-lRoKm_F5g"
 ```
 This sets up did="did:elastos:ioLFi22fodmFUAFKia6uTV2W8Jz9vEcQyP" and app_did="appid"
 
@@ -62,12 +62,13 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5fa962311ce63d7c749230b3"},
-      "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM"
+      "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+      "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
     }
   }
 EOF
 ```
+
 
 ### Register all the scripts
 - Set script "get_group_messages" that gets the last 100 messages for a particular group ID sorted with "created" field in the ascending order
@@ -415,7 +416,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5fa962311ce63d7c749230b3"},
+        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -442,7 +443,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
             "group_id": {
-              "$oid": "5fa962311ce63d7c749230b3"
+              "$oid": "5fb3df100a58f145bfe45f17"
             },
             "modified": {
               "$date": 1602774322173
@@ -454,10 +455,10 @@ Should return something like
 ```
 
 - Run script "get_group_messages". 
-NOTE: This is using $token2 because we're going to test calling a script as user2 that accesses user1's vault. More specifically, $token2 contains caller_did and caller_app_did so we have to pass in context with target_did(the vault owner's DID)
+NOTE: This is using $token2 because we're going to test calling a script from a different app. This would work the same way if the script was being called by a different DID user. More specifically, $token2 contains caller_did and caller_app_did so we have to pass in context with target_did(the vault owner's DID) and target_app_did
 ```bash
-caller_did="did:elastos:ioLFi22fodmFUAFKia6uTV2W8Jz9vEcQyP" # This is the DID of user2
-caller_app_did="appid" # This is the application that's calling the script
+caller_did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" # This is the DID of user2
+caller_app_did="appid2" # This is the application that's calling the script
 target_did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" # This is the DID of user1
 target_app_did="appid" # This is the application that's calling the script
 ```
@@ -470,7 +471,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
         "target_app_did": "appid"
       },
       "params": {
-        "group_id": {"\$oid": "5fa962311ce63d7c749230b3"}
+        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"}
       }
     }
 EOF
@@ -488,7 +489,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
             "group_id": {
-              "$oid": "5fa962311ce63d7c749230b3"
+              "$oid": "5fb3df100a58f145bfe45f17"
             },
             "modified": {
               "$date": 1602706609149
@@ -501,7 +502,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
             "group_id": {
-              "$oid": "5fa962311ce63d7c749230b3"
+              "$oid": "5fb3df100a58f145bfe45f17"
             },
             "modified": {
               "$date": 1602774322173
@@ -518,8 +519,8 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5fa962311ce63d7c749230b3"},
-        "old_content": "New Message",
+        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "old_content": "Old Message",
         "new_content": "Updated Message"
       }
     }
@@ -538,8 +539,12 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5fa962311ce63d7c749230b3"},
-        "content": "Updated Message"
+        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "content": {
+          "hello": {
+            "world": "kiran"
+          }
+        }
       }
     }
 EOF
@@ -557,7 +562,7 @@ curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script -H 
     {
       \"name\": \"upload_file\",
       \"params\": {
-        \"group_id\": {\"\$oid\": \"5fa962311ce63d7c749230b3\"},
+        \"group_id\": {\"\$oid\": \"5fb3df100a58f145bfe45f17\"},
         \"path\": \"logging.conf\"
       }
     }"
@@ -581,7 +586,7 @@ curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/script
     {
       "name": "download_file",
       "params": {
-        "group_id": {"\$oid": "5fa962311ce63d7c749230b3"},
+        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
         "path": "logging.conf"
       }
     }
@@ -595,7 +600,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_file_info",
       "params": {
-        "group_id": {"\$oid": "5fa962311ce63d7c749230b3"},
+        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
         "path": "logging.conf"
       }
     }
