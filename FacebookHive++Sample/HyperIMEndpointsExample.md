@@ -62,13 +62,12 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+      "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
       "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
     }
   }
 EOF
 ```
-
 
 ### Register all the scripts
 - Set script "get_group_messages" that gets the last 100 messages for a particular group ID sorted with "created" field in the ascending order
@@ -416,7 +415,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -443,7 +442,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
             "group_id": {
-              "$oid": "5fb3df100a58f145bfe45f17"
+              "$oid": "5fc46c9f3409d8a253dd8132"
             },
             "modified": {
               "$date": 1602774322173
@@ -471,7 +470,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
         "target_app_did": "appid"
       },
       "params": {
-        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"}
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"}
       }
     }
 EOF
@@ -489,7 +488,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
             "group_id": {
-              "$oid": "5fb3df100a58f145bfe45f17"
+              "$oid": "5fc46c9f3409d8a253dd8132"
             },
             "modified": {
               "$date": 1602706609149
@@ -502,7 +501,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
             "group_id": {
-              "$oid": "5fb3df100a58f145bfe45f17"
+              "$oid": "5fc46c9f3409d8a253dd8132"
             },
             "modified": {
               "$date": 1602774322173
@@ -519,7 +518,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
         "old_content": "Old Message",
         "new_content": "Updated Message"
       }
@@ -539,7 +538,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
         "content": {
           "hello": {
             "world": "kiran"
@@ -558,41 +557,58 @@ Should return something like
 
 - Run the script to upload
 ```bash
-curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: multipart/form-data" -F "metadata=
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
-      \"name\": \"upload_file\",
-      \"params\": {
-        \"group_id\": {\"\$oid\": \"5fb3df100a58f145bfe45f17\"},
-        \"path\": \"logging.conf\"
-      }
-    }"
-```
-Should return something like:
-```json
-    {
-      "_status": "OK",
-      "upload_file": {
-        "path": "logging.conf",
-        "upload": "Successful",
-        "vault_endpoint": "/api/v1/files/download?path=logging.conf"
-      }
-    }
-```
-
-- Run the script to download
-NOTE: You should first upload a file using upload file API or scripting file API before you're able to download
- ```bash
-curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
-    {
-      "name": "download_file",
+      "name": "upload_file",
       "params": {
-        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
         "path": "logging.conf"
       }
     }
 EOF
 ```
-Should just download the file and save it to downloaded-logging.conf file.
+Should return something like:
+```json
+{
+  "_status": "OK",
+  "upload": {
+    "transaction_id": "5fc4b654d3ae60e2286f0ac0"
+  }
+}
+```
+Then, call the run_script_upload with the transaction ID to upload the file
+```bash
+curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script_upload/5fc4b654d3ae60e2286f0ac0 -H "Authorization: token $token" -H "Content-Type: multipart/form-data"
+```
+Should then upload the file logging.conf to the vault
+
+- Run the script to download
+NOTE: You should first upload a file using upload file API or scripting file API before you're able to download
+ ```bash
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+    {
+      "name": "download_file",
+      "params": {
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "path": "logging.conf"
+      }
+    }
+EOF
+```
+Should return something like:
+```json
+{
+  "_status": "OK",
+  "download": {
+    "transaction_id": "5fc4b8ef740754a38ad9fd09"
+  }
+}
+```
+Then, call the run_script_download with the transaction ID to download the file
+ ```bash
+curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script_download/5fc4b8ef740754a38ad9fd09 -H "Authorization: token $token" 
+```
+Should then download the file and save it to downloaded-logging.conf file.
 
 - Get both the properties and hash of a file
 ```bash
@@ -600,7 +616,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "get_file_info",
       "params": {
-        "group_id": {"\$oid": "5fb3df100a58f145bfe45f17"},
+        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
         "path": "logging.conf"
       }
     }
