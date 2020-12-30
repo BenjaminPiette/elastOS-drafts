@@ -570,7 +570,7 @@ Should return something like:
 ```
 Then, call the run_script_upload with the transaction ID to upload the file
 ```bash
-curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script_upload/5feb74f1cb1b215ac94484fc -H "Authorization: token $token" -H "Content-Type: multipart/form-data"
+curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script_upload/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb3dfaWQiOiI1ZmVjZDg0NDNhYjliYzkzZTM1ODc1OTQiLCJ0YXJnZXRfZGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsInRhcmdldF9hcHBfZGlkIjoiYXBwaWQifQ.WWJP50t7sehpY0wgrV-XeJy8YRd4XVirY58jAeu8CGk -H "Authorization: token $token" -H "Content-Type: multipart/form-data"
 ```
 Should then upload the file logging.conf to the vault
 
@@ -598,7 +598,7 @@ Should return something like:
 ```
 Then, call the run_script_download with the transaction ID to download the file
  ```bash
-curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script_download/5feb771bb97c304c0f5b8e63 -H "Authorization: token $token" 
+curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script_download/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb3dfaWQiOiI1ZmVjZDg1ZTNhYjliYzkzZTM1ODc1YTUiLCJ0YXJnZXRfZGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsInRhcmdldF9hcHBfZGlkIjoiYXBwaWQifQ.QVN_E_Sxe60pG1TYmCkPR3Gd1htnIcyp1A2pfTdHWX4 -H "Authorization: token $token" 
 ```
 Should then download the file and save it to downloaded-logging.conf file.
 
