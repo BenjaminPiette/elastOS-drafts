@@ -2,15 +2,15 @@
 - Set up token1
 This is usually your own token that is created using user_did and app_did but for testing purposes, you can use the following:
 ```bash
-token="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoxNjA4MjE1MTkyLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsImFwcElkIjoiYXBwaWQiLCJhcHBJbnN0YW5jZURpZCI6ImRpZDplbGFzdG9zOmlkZnBLSkoxc29EeFQyR2NnQ1JuRHQzY3U5NFpuR2Z6TlgifQ.myJyQbd4JIGPoZvCItZ2B3SZgkDPHDeo8Vh_Dk5zpaQGs0O-mBehWWu6i39GHO0VnY1orvImHy5h0qFIJ1XtbA"
+token="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZGZwS0pKMXNvRHhUMkdjZ0NSbkR0M2N1OTRabkdmek5YIiwiZXhwIjoyNzUyNzM5NzIwNSwicHJvcHMiOiJ7XCJhcHBEaWRcIjogXCJhcHBpZFwiLCBcInVzZXJEaWRcIjogXCJkaWQ6ZWxhc3RvczppajhrckFWUkppdFpLSm1jQ3Vmb0xIUWpxN01lZjNaalROXCIsIFwibm9uY2VcIjogXCI1NDRiZTNjNi0zOTAzLTExZWItYWY0OC1hY2RlNDgwMDExMjJcIn0ifQ.xGqGT-doIWrsQyynv0DVq6YzTDyHpJrYQghX0dgLYe6qNXZ3jhq5QQPKKVFQhY3QwdANnn8Dr_2xbL8WuKZeuA"
 ```
 This sets up did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" and app_did="appid"
 - Set up token2
 This is a second token that can be used for testing purposes(eg. when one did user tries to access another did user's vault)
 ```bash
-token2="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZTFNNkpKNFpmVHZhYTZONEJ0blJZQzE5OUFncjZpaHptIiwiZXhwIjoxNjA4MjE1NDYzLCJ1c2VyRGlkIjoiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTiIsImFwcElkIjoiYXBwaWQyIiwiYXBwSW5zdGFuY2VEaWQiOiJkaWQ6ZWxhc3RvczppZTFNNkpKNFpmVHZhYTZONEJ0blJZQzE5OUFncjZpaHptIn0.e4dgj6V1g3ErIs1XAQ5eegdk4WvwebJFF4tWTZs7Xklgc37fGIat_psp9_xqYh3V6Irz1aTgRwz9-lRoKm_F5g"
+token2="eyJhbGciOiAiRVMyNTYiLCAidHlwIjogIkpXVCIsICJ2ZXJzaW9uIjogIjEuMCIsICJraWQiOiAiZGlkOmVsYXN0b3M6aWpVbkQ0S2VScGVCVUZtY0VEQ2JoeE1USlJ6VVlDUUNaTSNwcmltYXJ5In0.eyJpc3MiOiJkaWQ6ZWxhc3RvczppalVuRDRLZVJwZUJVRm1jRURDYmh4TVRKUnpVWUNRQ1pNIiwic3ViIjoiQWNjZXNzVG9rZW4iLCJhdWQiOiJkaWQ6ZWxhc3RvczppZTFNNkpKNFpmVHZhYTZONEJ0blJZQzE5OUFncjZpaHptIiwiZXhwIjoyNzUyNzM5NzM2OSwicHJvcHMiOiJ7XCJhcHBEaWRcIjogXCJhcHBpZDJcIiwgXCJ1c2VyRGlkXCI6IFwiZGlkOmVsYXN0b3M6aWo4a3JBVlJKaXRaS0ptY0N1Zm9MSFFqcTdNZWYzWmpUTlwiLCBcIm5vbmNlXCI6IFwiYjdhMDNiZGUtMzkwMy0xMWViLThlM2QtYWNkZTQ4MDAxMTIyXCJ9In0.XLj98LePKgSvb7asOns4tOqauHETaDOSv-L4qkcYxrDOM9f4wrHS13gOV8Zi0v2Vw9p7ynKLRFM7Vt1ijW6-Kg"
 ```
-This sets up did="did:elastos:ioLFi22fodmFUAFKia6uTV2W8Jz9vEcQyP" and app_did="appid"
+This sets up did="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN" and app_did="appid2"
 
 ### First Time Only
 - Create a new collection "groups"
@@ -62,7 +62,7 @@ curl -XPOST http://localhost:5000/api/v1/db/insert_one -H "Authorization: token 
     "collection": "messages",
     "document": {
       "content": "Old Message",
-      "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+      "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
       "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
     }
   }
@@ -345,10 +345,13 @@ EOF
 ```
 
 - Set script "get_file_info" that gets the properties and hash of a file
+NOTE: We are going to allow anonymous access with this script by setting "allowAnonymousUser" to true and "allowAnonymousApp" to true
  ```bash
 curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "get_file_info",
+      "allowAnonymousUser": true,
+      "allowAnonymousApp": true,
       "executable": {
         "type": "aggregated",
         "name": "get_file_properties_and_hash",
@@ -370,17 +373,6 @@ curl -XPOST http://localhost:5000/api/v1/scripting/set_script -H "Authorization:
             }
           }
         ]
-      },
-      "condition": {
-        "type": "queryHasResults",
-        "name": "user_in_group",
-        "body": {
-          "collection": "groups",
-          "filter": {
-            "_id": "\$params.group_id",
-            "friends": "\$caller_did"
-          }
-        }
       }
     }
 EOF
@@ -415,7 +407,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "add_group_message",
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
         "group_created": {
           "$gte": "2021-08-27 00:00:00"
         },
@@ -442,7 +434,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
             "group_id": {
-              "$oid": "5fc46c9f3409d8a253dd8132"
+              "$oid": "5feb73a8cb1b215ac9448486"
             },
             "modified": {
               "$date": 1602774322173
@@ -470,7 +462,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
         "target_app_did": "appid"
       },
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"}
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"}
       }
     }
 EOF
@@ -488,7 +480,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ijUnD4KeRpeBUFmcEDCbhxMTJRzUYCQCZM",
             "group_id": {
-              "$oid": "5fc46c9f3409d8a253dd8132"
+              "$oid": "5feb73a8cb1b215ac9448486"
             },
             "modified": {
               "$date": 1602706609149
@@ -501,7 +493,7 @@ Should return something like
             },
             "friend_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
             "group_id": {
-              "$oid": "5fc46c9f3409d8a253dd8132"
+              "$oid": "5feb73a8cb1b215ac9448486"
             },
             "modified": {
               "$date": 1602774322173
@@ -518,7 +510,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "update_group_message",
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
         "old_content": "Old Message",
         "new_content": "Updated Message"
       }
@@ -538,7 +530,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "delete_group_message",
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
         "content": {
           "hello": {
             "world": "kiran"
@@ -561,7 +553,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "upload_file",
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
         "path": "logging.conf"
       }
     }
@@ -578,7 +570,7 @@ Should return something like:
 ```
 Then, call the run_script_upload with the transaction ID to upload the file
 ```bash
-curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script_upload/5fc4b654d3ae60e2286f0ac0 -H "Authorization: token $token" -H "Content-Type: multipart/form-data"
+curl -F data=@logging.conf http://localhost:5000/api/v1/scripting/run_script_upload/5feb74f1cb1b215ac94484fc -H "Authorization: token $token" -H "Content-Type: multipart/form-data"
 ```
 Should then upload the file logging.conf to the vault
 
@@ -589,7 +581,7 @@ curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization:
     {
       "name": "download_file",
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
         "path": "logging.conf"
       }
     }
@@ -606,17 +598,22 @@ Should return something like:
 ```
 Then, call the run_script_download with the transaction ID to download the file
  ```bash
-curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script_download/5fc4b8ef740754a38ad9fd09 -H "Authorization: token $token" 
+curl --output downloaded-logging.conf -XPOST http://localhost:5000/api/v1/scripting/run_script_download/5feb771bb97c304c0f5b8e63 -H "Authorization: token $token" 
 ```
 Should then download the file and save it to downloaded-logging.conf file.
 
-- Get both the properties and hash of a file
+- Get both the properties and hash of a file.
+NOTE: This is a script where Anonymous options are set to True so we do not need to pass in an authorization token
 ```bash
-curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Authorization: token $token" -H "Content-Type: application/json" -d @- << EOF
+curl -XPOST http://localhost:5000/api/v1/scripting/run_script -H "Content-Type: application/json" -d @- << EOF
     {
       "name": "get_file_info",
+      "context": {
+        "target_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
+        "target_app_did": "appid"
+      },
       "params": {
-        "group_id": {"\$oid": "5fc46c9f3409d8a253dd8132"},
+        "group_id": {"\$oid": "5feb73a8cb1b215ac9448486"},
         "path": "logging.conf"
       }
     }
@@ -637,3 +634,8 @@ Should return something like:
       }
     }
 ```
+
+"context": {
+        "target_did": "did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN",
+        "target_app_did": "appid"
+      }
