@@ -686,3 +686,40 @@ Should return something like:
   }
 }
 ```
+
+### Run scripts using URLs directly
+
+In addition to using /api/v1/scripting/run_script endpoint with POST parameters, you can also run all the scripts directly using a single URL using GET request. The following 2 examples showcase 2 different types of scripts(no parameters passed and parameters passed with nested json). Note that if it's not a nested json, you can directly append the `?key1=value1&key2=value2` to the end of the URL
+
+- Run script "get_groups"
+
+How to encode extra values(that may be JSON objects):
+
+```bash
+TARGET_DID="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
+TARGET_APP_DID="appid"
+```
+
+Run the script directly:
+
+```bash
+curl -H "Authorization: token $token" http://localhost:5000/api/v1/scripting/run_script_url/$TARGET_DID@$TARGET_APP_DID/get_groups
+```
+
+- Get both the properties and hash of a file.
+  NOTE: This is a script where Anonymous options are set to True so we do not need to pass in an authorization token
+
+How to encode extra values(that may be JSON objects):
+
+```bash
+TARGET_DID="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
+TARGET_APP_DID="appid"
+params='{ "group_id": {"\$oid": "600727f9239421f76705a817"}, "path": "logging.conf"}'
+PARAMS=$(python3 -c "import urllib.parse; print(urllib.parse.urlencode($params))")
+```
+
+Run the script directly:
+
+```bash
+curl http://localhost:5000/api/v1/scripting/run_script_url/$TARGET_DID@$TARGET_APP_DID/get_file_info?$PARAMS
+```
