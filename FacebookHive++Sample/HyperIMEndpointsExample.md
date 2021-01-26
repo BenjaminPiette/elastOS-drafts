@@ -714,12 +714,11 @@ How to encode extra values(that may be JSON objects):
 ```bash
 TARGET_DID="did:elastos:ij8krAVRJitZKJmcCufoLHQjq7Mef3ZjTN"
 TARGET_APP_DID="appid"
-params='{ "group_id": {"\$oid": "600727f9239421f76705a817"}, "path": "logging.conf"}'
-PARAMS=$(python3 -c "import urllib.parse; print(urllib.parse.urlencode($params))")
+PARAMS=$(python3 -c "import urllib.parse; print(urllib.parse.quote('{ \"group_id\": {\"\$oid\": \"600727f9239421f76705a817\"}, \"path\": \"logging.conf\"}'))")
 ```
 
 Run the script directly:
 
 ```bash
-curl http://localhost:5000/api/v1/scripting/run_script_url/$TARGET_DID@$TARGET_APP_DID/get_file_info?$PARAMS
+curl http://localhost:5000/api/v1/scripting/run_script_url/$TARGET_DID@$TARGET_APP_DID/get_file_info?params=$PARAMS
 ```
